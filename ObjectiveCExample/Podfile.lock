@@ -1,16 +1,31 @@
 PODS:
+  - mailcore2-ios (0.6.4)
+  - mailcore2-osx (0.6.4)
+  - OpenSSL-Universal (1.0.2.13)
   - SSZipArchive (2.1.4)
 
 DEPENDENCIES:
+  - mailcore2-ios
+  - mailcore2-osx
+  - OpenSSL-Universal
   - SSZipArchive (from `..`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - mailcore2-ios
+    - mailcore2-osx
+    - OpenSSL-Universal
 
 EXTERNAL SOURCES:
   SSZipArchive:
     :path: ".."
 
 SPEC CHECKSUMS:
+  mailcore2-ios: 3ff0be2fa553d4da9c11d39c11d51863c768f24f
+  mailcore2-osx: 56890045e50f3b09b6530f5bd008eda67e1f6b82
+  OpenSSL-Universal: 401888162f11c33ebbd46f782d9229da35c61327
   SSZipArchive: 18891f81644ecfc89df4a3aa29ed6d0788156cb9
 
-PODFILE CHECKSUM: 5e250843c66c607960128ebfe02ab7d6569102be
+PODFILE CHECKSUM: 00daeef5cedfc821dda40c58ef605c33af50b01b
 
 COCOAPODS: 1.5.3

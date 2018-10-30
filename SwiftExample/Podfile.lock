@@ -1,16 +1,23 @@
 PODS:
+  - mailcore2-ios (0.6.4)
   - SSZipArchive (2.1.4)
 
 DEPENDENCIES:
+  - mailcore2-ios
   - SSZipArchive (from `..`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - mailcore2-ios
 
 EXTERNAL SOURCES:
   SSZipArchive:
     :path: ".."
 
 SPEC CHECKSUMS:
+  mailcore2-ios: 3ff0be2fa553d4da9c11d39c11d51863c768f24f
   SSZipArchive: 18891f81644ecfc89df4a3aa29ed6d0788156cb9
 
-PODFILE CHECKSUM: 0dc500eb72745751ccba7677de4da5534fcef36d
+PODFILE CHECKSUM: 1cc51cb8fe41b8526ded7b6aaf36d18bc71f1694
 
 COCOAPODS: 1.5.3

@@ -8,14 +8,18 @@ abstract_target 'core' do
   pod 'SSZipArchive', :path => '..'
 
   target 'ObjectiveCExample' do
-    platform :ios
+    pod 'mailcore2-ios'
+    platform :ios, '8.0'
   end
 
   target 'ObjectiveCExampleTests_iOS' do
-    platform :ios
+    pod 'mailcore2-ios'
+    platform :ios, '8.0'
   end
 
   target 'ObjectiveCExampleTests_macOS' do
+    pod 'mailcore2-osx'
+    pod 'OpenSSL-Universal'
     platform :osx, '10.8'
   end
 

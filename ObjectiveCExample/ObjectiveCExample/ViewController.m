@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "SSZipArchive.h"
+#import <mailcore2-ios/MailCore/MailCore.h>
 
 @interface ViewController ()
 
