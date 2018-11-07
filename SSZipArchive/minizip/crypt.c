@@ -25,17 +25,24 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
 
-#ifdef _WIN32
-#  include <windows.h>
-#  include <wincrypt.h>
+#ifdef __linux__
+#include <bsd/stdlib.h>
 #else
-#  include <sys/stat.h>
-#  include <fcntl.h>
-#  include <unistd.h>
+#include <stdlib.h>
+#endif
+
+#ifdef _WIN32
+#include <windows.h>
+#include <wincrypt.h>
+
+#else
+
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #endif
 
 #include "zlib.h"
@@ -144,3 +151,4 @@ int crypthead(const char *passwd, uint8_t *buf, int buf_size, uint32_t *pkeys,
 #endif
 
 /***************************************************************************/
+
