@@ -15,6 +15,17 @@ ZipArchive is a simple utility class for zipping and unzipping files on iOS, mac
 - Append to existing zip files;
 - Zip-up NSData instances. (with a filename)
 
+## What are modified
+
+ZipArchive here can run on most of Unix-like systems besides macOS/iOS. If you're using Linux such as Ubuntu. You should install zlib and BSD library. Using the following commands will simply fulfill it.
+
+```
+sudo apt-get install zlib1g-dev
+sudo apt-get install libbsd-dev
+```
+
+Note that don't forget to link the BSD library with -lbsd and link the zlib with -lz.
+
 ## Installation and Setup
 
 *The main release branch is configured to support Objective C and Swift 3+.*
