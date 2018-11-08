@@ -28,7 +28,6 @@
 #define NS_UNAVAILABLE
 #endif
 
-extern NSString *const SSZipArchiveErrorDomain;
 enum SSZipArchiveErrorCode {
     SSZipArchiveErrorCodeFailedOpenZipFile      = -1,
     SSZipArchiveErrorCodeFailedOpenFileInZip    = -2,
