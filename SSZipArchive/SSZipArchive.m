@@ -13,7 +13,7 @@
 
 #include <sys/stat.h>
 
-NSString *const SSZipArchiveErrorDomain = @"SSZipArchiveErrorDomain";
+#define SSZipArchiveErrorDomain     @"SSZipArchiveErrorDomain"
 
 #define CHUNK 16384
 
@@ -83,6 +83,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
                                      userInfo:[NSDictionary dictionaryWithObject:@"failed to open zip file" forKey:NSLocalizedDescriptionKey]];
         }
         
+        NSLog(@"[SSZipArchive] failed to open zip file!");
+        
         return NO;
     }
 
@@ -106,6 +108,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
                                                      code:SSZipArchiveErrorCodeFailedOpenFileInZip
                                                  userInfo:[NSDictionary dictionaryWithObject:@"failed to open first file in zip file" forKey:NSLocalizedDescriptionKey]];
                     }
+                    
+                    NSLog(@"[SSZipArchive] failed to open first file in zip file!");
                 }
                 
                 return NO;
@@ -121,6 +125,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
                                                  code:SSZipArchiveErrorCodeFileInfoNotLoadable
                                              userInfo:[NSDictionary dictionaryWithObject:@"failed to retrieve info for file" forKey:NSLocalizedDescriptionKey]];
                 }
+                
+                NSLog(@"[SSZipArchive] failed to retrieve info for file!");
                 
                 return NO;
             }
@@ -138,9 +144,11 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
                         if (error != NULL)
                         {
                             *error = [NSError errorWithDomain:SSZipArchiveErrorDomain
-                                                         code:SSZipArchiveErrorCodeFileContentNotReadable
-                                                     userInfo:[NSDictionary dictionaryWithObject:@"failed to read contents of file entry" forKey:NSLocalizedDescriptionKey]];
+                                            code:SSZipArchiveErrorCodeFileContentNotReadable
+                                            userInfo:[NSDictionary dictionaryWithObject:@"failed to read contents of file entry" forKey:NSLocalizedDescriptionKey]];
                         }
+                        
+                        NSLog(@"[SSZipArchive] failed to read contents of file entry!");
                     }
                     
                     return NO;
@@ -181,6 +189,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
         if (error != NULL)
             *error = err;
         
+        NSLog(@"[SSZipArchive] received invalid argument(s)!");
+        
         return NO;
     }
     
@@ -192,6 +202,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
         NSError *err = [NSError errorWithDomain:SSZipArchiveErrorDomain code:SSZipArchiveErrorCodeFailedOpenZipFile userInfo:userInfo];
         if (error != NULL)
             *error = err;
+        
+        NSLog(@"[SSZipArchive] failed to open zip file!");
 
         return NO;
     }
@@ -213,6 +225,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
         NSError *err = [NSError errorWithDomain:SSZipArchiveErrorDomain code:SSZipArchiveErrorCodeFailedOpenFileInZip userInfo:userInfo];
         if (error != NULL)
             *error = err;
+        
+        NSLog(@"[SSZipArchive] failed to open first file in zip file!");
         
         return NO;
     }
@@ -246,8 +260,11 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
         
         if (ret != UNZ_OK)
         {
-            unzippingError = [NSError errorWithDomain:@"SSZipArchiveErrorDomain" code:SSZipArchiveErrorCodeFailedOpenFileInZip userInfo:[NSDictionary dictionaryWithObject:@"failed to open file in zip file" forKey:NSLocalizedDescriptionKey]];
+            unzippingError = [NSError errorWithDomain:SSZipArchiveErrorDomain code:SSZipArchiveErrorCodeFailedOpenFileInZip userInfo:[NSDictionary dictionaryWithObject:@"failed to open file in zip file" forKey:NSLocalizedDescriptionKey]];
             success = NO;
+            
+            NSLog(@"[SSZipArchive] failed to open file in zip file!");
+            
             break;
         }
         
@@ -258,9 +275,12 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
         ret = unzGetCurrentFileInfo(zip, &fileInfo, NULL, 0, NULL, 0, NULL, 0);
         if (ret != UNZ_OK)
         {
-            unzippingError = [NSError errorWithDomain:@"SSZipArchiveErrorDomain" code:SSZipArchiveErrorCodeFileInfoNotLoadable userInfo:[NSDictionary dictionaryWithObject:@"failed to retrieve info for file" forKey:NSLocalizedDescriptionKey]];
+            unzippingError = [NSError errorWithDomain:SSZipArchiveErrorDomain code:SSZipArchiveErrorCodeFileInfoNotLoadable userInfo:[NSDictionary dictionaryWithObject:@"failed to retrieve info for file" forKey:NSLocalizedDescriptionKey]];
             success = NO;
             unzCloseCurrentFile(zip);
+            
+            NSLog(@"[SSZipArchive] failed to retrieve info for file!");
+            
             break;
         }
 
@@ -337,23 +357,28 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
             directoryAttr = [NSDictionary dictionaryWithObjectsAndKeys:modDate, NSFileCreationDate, modDate, NSFileModificationDate, nil];
             [directoriesModificationDates addObject:[NSDictionary dictionaryWithObjectsAndKeys:fullPath, @"path", modDate, @"modDate", nil]];
         }
-        if (isDirectory)
-            [fileManager createDirectoryAtPath:fullPath withIntermediateDirectories:YES attributes:directoryAttr error:&err];
-        else
-            [fileManager createDirectoryAtPath:fullPath.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:directoryAttr error:&err];
         
-        if (err != nil)
+        BOOL createDirResult;
+        if (isDirectory)
+            createDirResult = [fileManager createDirectoryAtPath:fullPath withIntermediateDirectories:YES attributes:directoryAttr error:&err];
+        else
+            createDirResult = [fileManager createDirectoryAtPath:fullPath.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:directoryAttr error:&err];
+        
+        if(!createDirResult)
         {
-            if ([err.domain isEqualToString:NSCocoaErrorDomain] &&
-                err.code == 640)
+            if(err != nil)
             {
-                unzippingError = err;
-                unzCloseCurrentFile(zip);
-                success = NO;
-                break;
+                if ([err.domain isEqualToString:NSCocoaErrorDomain] &&
+                    err.code == 640)
+                {
+                    unzippingError = err;
+                    unzCloseCurrentFile(zip);
+                    success = NO;
+                    break;
+                }
+                
+                NSLog(@"[SSZipArchive] Error: %@", err.localizedDescription);
             }
-            
-            NSLog(@"[SSZipArchive] Error: %@", err.localizedDescription);
         }
         
         if ([fileManager fileExistsAtPath:fullPath] && !isDirectory && !overwrite) {
@@ -385,7 +410,7 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
                                 NSString *message = [NSString stringWithFormat:@"Failed to write file (check your free space)"];
                                 NSLog(@"[SSZipArchive] %@", message);
                                 success = NO;
-                                unzippingError = [NSError errorWithDomain:@"SSZipArchiveErrorDomain" code:SSZipArchiveErrorCodeFailedToWriteFile userInfo:[NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey]];
+                                unzippingError = [NSError errorWithDomain:SSZipArchiveErrorDomain code:SSZipArchiveErrorCodeFailedToWriteFile userInfo:[NSDictionary dictionaryWithObject:message forKey:NSLocalizedDescriptionKey]];
                                 break;
                             }
                         }
@@ -468,6 +493,7 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
                         unzippingError = enospcError;
                         unzCloseCurrentFile(zip);
                         success = NO;
+                        NSLog(@"[SSZipArchive] Failed to open file descriptor!");
                         break;
                     }
                 }
@@ -583,6 +609,8 @@ extern BOOL _fileIsSymbolicLink(const unz_file_info *fileInfo);
     {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"crc check failed for file" forKey:NSLocalizedDescriptionKey];
         retErr = [NSError errorWithDomain:SSZipArchiveErrorDomain code:SSZipArchiveErrorCodeFileInfoNotLoadable userInfo:userInfo];
+        
+        NSLog(@"[SSZipArchive] crc check failed for file!");
     }
     
     if (error != NULL)
