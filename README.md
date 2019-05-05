@@ -17,14 +17,14 @@ ZipArchive is a simple utility class for zipping and unzipping files on iOS, mac
 
 ## What are modified
 
-ZipArchive here can run on most of Unix-like systems besides macOS/iOS. If you're using Linux such as Ubuntu. You should install zlib and BSD library. Using the following commands will simply fulfill it.
+ZipArchive here can run on most of Unix-like systems besides macOS/iOS. If you're using Linux such as Ubuntu. You should install zlib and BSD library. Using the following commands will simply fulfill it for Debian-like operating systems.
 
 ```
 sudo apt-get install zlib1g-dev
 sudo apt-get install libbsd-dev
 ```
 
-Note that don't forget to link the BSD library with -lbsd and link the zlib with -lz.
+Note that don't forget to link the **BSD library** with `-lbsd` and link the **zlib library** with `-lz`.
 
 ## Installation and Setup
 
