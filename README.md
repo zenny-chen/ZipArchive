@@ -26,7 +26,11 @@ sudo apt-get install libbsd-dev
 
 Note that don't forget to link the **BSD library** with `-lbsd` and link the **zlib library** with `-lz`.
 
+<br />
+
 Also, here added a legacy version which can work on single-chip devices such as Raspberry Pi. The folder **ZipArchive** is the whole complete sources and **legacy_main.m** is the usage demo.
+
+As to the legacy version, there is no need to add the **BSD library**. It is just simple.
 
 ## Installation and Setup
 
