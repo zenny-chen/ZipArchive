@@ -26,6 +26,8 @@ sudo apt-get install libbsd-dev
 
 Note that don't forget to link the **BSD library** with `-lbsd` and link the **zlib library** with `-lz`.
 
+Also, here added a legacy version which can work on single-chip devices such as Raspberry Pi. The folder **ZipArchive** is the whole complete sources and **legacy_main.m** is the usage demo.
+
 ## Installation and Setup
 
 *The main release branch is configured to support Objective C and Swift 3+.*
