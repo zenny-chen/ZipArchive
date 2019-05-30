@@ -61,7 +61,7 @@
 	zip_fileinfo zipInfo = {0};
 //	zipInfo.dosDate = (unsigned long) current;
 	
-	NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
+	NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:NULL];
 	if( attr )
 	{
 		NSDate* fileDate = (NSDate*)[attr objectForKey:NSFileModificationDate];
@@ -70,8 +70,8 @@
 			// some application does use dosDate, but tmz_date instead
 		//	zipInfo.dosDate = [fileDate timeIntervalSinceDate:[self Date1980] ];
 			NSCalendar* currCalendar = [NSCalendar currentCalendar];
-			uint flags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay |
-				NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+			uint flags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit |
+				NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
 			NSDateComponents* dc = [currCalendar components:flags fromDate:fileDate];
 			zipInfo.tmz_date.tm_sec = (uInt)[dc second];
 			zipInfo.tmz_date.tm_min = (uInt)[dc minute];
@@ -220,9 +220,9 @@
 		NSString* fullPath = [path stringByAppendingPathComponent:strPath];
 		
 		if( isDirectory )
-			[fman createDirectoryAtPath:fullPath withIntermediateDirectories:YES attributes:nil error:nil];
+			[fman createDirectoryAtPath:fullPath withIntermediateDirectories:YES attributes:nil error:NULL];
 		else
-			[fman createDirectoryAtPath:[fullPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
+			[fman createDirectoryAtPath:[fullPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
 		if( [fman fileExistsAtPath:fullPath] && !isDirectory && !overwrite )
 		{
 			if( ![self OverWrite:fullPath] )
@@ -265,7 +265,7 @@
 			dc.year = fileInfo.tmu_date.tm_year;
 			
 			NSCalendar *gregorian = [[NSCalendar alloc] 
-									 initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+									 initWithCalendarIdentifier:NSGregorianCalendar];
 			
 			orgDate = [gregorian dateFromComponents:dc];
             
@@ -275,7 +275,6 @@
 			NSDictionary* attr = [NSDictionary dictionaryWithObject:orgDate forKey:NSFileModificationDate]; //[[NSFileManager defaultManager] fileAttributesAtPath:fullPath traverseLink:YES];
 			if( attr )
 			{
-				//		[attr  setValue:orgDate forKey:NSFileCreationDate];
 				if(![[NSFileManager defaultManager] changeFileAttributes:attr atPath:fullPath])
 				{
 					// cann't set attributes 
@@ -327,8 +326,9 @@
 	[comps setDay:1];
 	[comps setMonth:1];
 	[comps setYear:1980];
+    
 	NSCalendar *gregorian = [[NSCalendar alloc]
-							 initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+							 initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDate *date = [gregorian dateFromComponents:comps];
     
     [gregorian release];
