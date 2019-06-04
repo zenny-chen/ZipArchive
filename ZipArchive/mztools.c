@@ -11,6 +11,7 @@
 #include "zlib.h"
 #include "unzip.h"
 
+
 #define READ_8(adr)  ((unsigned char)*(adr))
 #define READ_16(adr) ( READ_8(adr) | (READ_8(adr+1) << 8) )
 #define READ_32(adr) ( READ_16(adr) | (READ_16((adr)+2) << 16) )
@@ -27,12 +28,12 @@
   WRITE_16((unsigned char*)(buff) + 2, (n) >> 16); \
 } while(0)
 
-extern int ZEXPORT unzRepair(file, fileOut, fileOutTmp, nRecovered, bytesRecovered)
-const char* file;
-const char* fileOut;
-const char* fileOutTmp;
-uLong* nRecovered;
-uLong* bytesRecovered;
+
+int ZEXPORT __attribute__((weak, visibility("internal"))) unzRepair(const char* file,
+                                                                    const char* fileOut,
+                                                                    const char* fileOutTmp,
+                                                                    uLong* nRecovered,
+                                                                    uLong* bytesRecovered)
 {
   int err = Z_OK;
   FILE* fpZip = fopen(file, "rb");
